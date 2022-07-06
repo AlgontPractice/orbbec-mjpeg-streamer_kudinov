@@ -25,4 +25,4 @@ class Scanner:
             if not status:
                 raise Exception()
             app['frame'] = cv2.imencode('.jpg', frame)[1]
-            await asyncio.sleep(1)
+            await asyncio.sleep(1/30)

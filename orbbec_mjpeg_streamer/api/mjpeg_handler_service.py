@@ -2,7 +2,7 @@ import logging
 import time
 import numpy as np
 import asyncio
-from aiohttp import web
+from aiohttp import web, MultipartWriter
 from aiohttp_cors import CorsViewMixin
 from m7_aiohttp.util.logged import logged
 
@@ -18,7 +18,20 @@ class MjpegHandlerService(CorsViewMixin):
 
 
         # TODO: реализуем метод, генерирующий mjpeg-поток на основе кадров из переменной app['frame']
-        while True:    
-            frame = web.Response(content_type='image/jpeg', body=np.array(request.app['frame']).tobytes())
-            await frame.prepare(request)
-            await frame.write(np.array(request.app['frame']).tobytes())
+        my_boundary = 'some-boundary'
+        response = web.StreamResponse(
+            status=200,
+            reason='OK',
+            headers={
+                'Content-Type': 'multipart/x-mixed-replace;boundary={}'.format(my_boundary)
+            }
+        )
+        await response.prepare(request)
+        while True:
+            frame = np.array(request.app['frame']).tobytes()
+            with MultipartWriter('image/jpeg', boundary=my_boundary) as mpwriter:
+                mpwriter.append(frame, {
+                    'Content-Type': 'image/jpeg'
+                })
+                await mpwriter.write(response, close_boundary=False)
+            await response.drain()
