@@ -35,7 +35,7 @@ class Scanner:
 
         cv2.samples.addSamplesDataSearchPath('C:\\Users\\tri\\Documents\\projects\\PRAKTIKA2022\\opencv_samples')
         self.Cascade = cv2.CascadeClassifier()
-        self.Cascade.load(cv2.samples.findFile('haarcascade_frontalface_alt.xml'))
+        self.Cascade.load(cv2.samples.findFile('haarcascade_fullbody.xml'))
         if self.Cascade.empty():
             raise Exception()
 
@@ -66,7 +66,7 @@ class Scanner:
             recs = self.Cascade.detectMultiScale(frame_gray)
             for (x, y, w, h) in recs:
                 frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 255), 2)
-                cv2.imwrite('recognitions/face.jpg', frame)
+                cv2.imwrite('recognitions/person.jpg', frame)
 
 
             app['frame'] = cv2.imencode('.jpg', frame)[1]
