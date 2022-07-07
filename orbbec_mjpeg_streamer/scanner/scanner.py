@@ -19,6 +19,15 @@ class Scanner:
         # TODO: метод, в котором реализуем подключение к камере с помощью библиотеки opencv-python
         self.depthCap = cv2.VideoCapture(cv2.CAP_OPENNI2_ASTRA)
         self.colorCap = cv2.VideoCapture(1)
+        self.colorCap.set(cv2.CAP_PROP_FRAME_WIDTH, self._video_params['width'])
+        self.colorCap.set(cv2.CAP_PROP_FRAME_HEIGHT, self._video_params['height'])
+        self.colorCap.set(cv2.CAP_PROP_FPS, self._video_params['fps'])
+        self.colorCap.set(cv2.CAP_PROP_CONTRAST, self._video_params['contrast'])
+        self.colorCap.set(cv2.CAP_PROP_SATURATION, self._video_params['saturation'])
+
+
+
+        
 
 
         if not (self.depthCap.isOpened()):
