@@ -24,6 +24,21 @@ class Scanner:
         self.colorCap.set(cv2.CAP_PROP_FPS, self._video_params['fps'])
         self.colorCap.set(cv2.CAP_PROP_CONTRAST, self._video_params['contrast'])
         self.colorCap.set(cv2.CAP_PROP_SATURATION, self._video_params['saturation'])
+        self.colorCap.set(cv2.CAP_PROP_HUE, self._video_params['hue'])
+        self.colorCap.set(cv2.CAP_PROP_HUE, self._video_params['hue'])
+        self.colorCap.set(cv2.CAP_PROP_GAIN, self._video_params['gain'])
+        self.colorCap.set(cv2.CAP_PROP_WB_TEMPERATURE, self._video_params['white_balance_temperature'])
+        self.colorCap.set(cv2.CAP_PROP_SHARPNESS, self._video_params['sharpness'])
+        self.colorCap.set(cv2.CAP_PROP_BACKLIGHT, self._video_params['backlight_compensation'])
+        self.colorCap.set(cv2.CAP_PROP_AUTO_EXPOSURE, self._video_params['exposure_auto'])
+        self.colorCap.set(cv2.CAP_PROP_EXPOSURE, self._video_params['exposure_absolute'])
+
+
+
+
+
+
+
 
 
 
@@ -41,10 +56,8 @@ class Scanner:
 
             depthStatus, depthMap = self.depthCap.retrieve(cv2.CAP_OPENNI_DEPTH_MAP)
             clrStatus, frame = self.colorCap.retrieve()
-            minimal = np.array(depthMap).max()
-            min_img = np.zeros((512,512,3), np.uint8)
-            cv2.putText(min_img, str(minimal), (10,500), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, 2)
-
+            minimal = int(np.array(depthMap).max())
+            app['minimal'] = minimal
             depthMap = depthMap.astype(np.uint8)
             if not (clrStatus):
                 raise Exception()
@@ -53,6 +66,6 @@ class Scanner:
             
             app['frame'] = cv2.imencode('.jpg', frame)[1]
             app['depthmap'] = cv2.imencode('.jpg', depthMap)[1]
-            app['minimal'] = cv2.imencode('.jpg', min_img)[1]
+            
 
             await asyncio.sleep(1/self._video_params['fps'])

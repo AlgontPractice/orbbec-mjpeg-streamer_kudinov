@@ -66,9 +66,9 @@ class MjpegHandlerService(CorsViewMixin):
         )
         await response.prepare(request)
         while True:
-            img = 123 #np.array(request.app['minimal']).tobytes()
+            img = request.app['minimal']
             with MultipartWriter('text/plain', boundary=my_boundary) as mpwriter:
-                mpwriter.append(img, {
+                mpwriter.append(str(img), {
                     'Content-Type': 'text/plain',
                     'Content-length': str(len(str(img)))
                 })
