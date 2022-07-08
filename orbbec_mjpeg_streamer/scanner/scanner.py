@@ -18,7 +18,7 @@ class Scanner:
     async def init_device(self):
         # TODO: метод, в котором реализуем подключение к камере с помощью библиотеки opencv-python
         self.depthCap = cv2.VideoCapture(cv2.CAP_OPENNI2_ASTRA)
-        self.colorCap = cv2.VideoCapture(0)
+        self.colorCap = cv2.VideoCapture(1)
         self.colorCap.set(cv2.CAP_PROP_FRAME_WIDTH, self._video_params['width'])
         self.colorCap.set(cv2.CAP_PROP_FRAME_HEIGHT, self._video_params['height'])
         self.colorCap.set(cv2.CAP_PROP_FPS, self._video_params['fps'])
@@ -35,7 +35,7 @@ class Scanner:
 
         cv2.samples.addSamplesDataSearchPath('C:\\Users\\tri\\Documents\\projects\\PRAKTIKA2022\\opencv_samples')
         self.Cascade = cv2.CascadeClassifier()
-        self.Cascade.load(cv2.samples.findFile('haarcascade_fullbody.xml'))
+        self.Cascade.load(cv2.samples.findFile('haarcascade_frontalface_alt.xml'))
         if self.Cascade.empty():
             raise Exception()
 
