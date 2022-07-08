@@ -14,11 +14,12 @@ class Scanner:
         self._video_params = video_params
         self.colorCap = None
         # self.depthCap = None
+        self.photo_taken = False
 
     async def init_device(self):
         # TODO: метод, в котором реализуем подключение к камере с помощью библиотеки opencv-python
-        self.depthCap = cv2.VideoCapture(cv2.CAP_OPENNI2_ASTRA)
-        self.colorCap = cv2.VideoCapture(1)
+        #self.depthCap = cv2.VideoCapture(cv2.CAP_OPENNI2_ASTRA)
+        self.colorCap = cv2.VideoCapture(0)
         self.colorCap.set(cv2.CAP_PROP_FRAME_WIDTH, self._video_params['width'])
         self.colorCap.set(cv2.CAP_PROP_FRAME_HEIGHT, self._video_params['height'])
         self.colorCap.set(cv2.CAP_PROP_FPS, self._video_params['fps'])
@@ -33,7 +34,7 @@ class Scanner:
         self.colorCap.set(cv2.CAP_PROP_AUTO_EXPOSURE, self._video_params['exposure_auto'])
         self.colorCap.set(cv2.CAP_PROP_EXPOSURE, self._video_params['exposure_absolute'])
 
-        cv2.samples.addSamplesDataSearchPath('C:\\Users\\tri\\Documents\\projects\\PRAKTIKA2022\\opencv_samples')
+        cv2.samples.addSamplesDataSearchPath('/etc/cam2_kudinov/orbbec-mjpeg-streamer_kudinov/opencv_samples/')
         self.Cascade = cv2.CascadeClassifier()
         self.Cascade.load(cv2.samples.findFile('haarcascade_frontalface_alt.xml'))
         if self.Cascade.empty():
@@ -62,11 +63,16 @@ class Scanner:
             
             frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             frame_gray = cv2.equalizeHist(frame_gray)
-            recs = np.empty(0, 'int32')
             recs = self.Cascade.detectMultiScale(frame_gray)
+            is_empty = True
             for (x, y, w, h) in recs:
+                is_empty = not bool(x)
                 frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 255), 2)
+                
+            
+            if (not self.photo_taken) and (not is_empty):
                 cv2.imwrite('recognitions/person.jpg', frame)
+
 
 
             app['frame'] = cv2.imencode('.jpg', frame)[1]
