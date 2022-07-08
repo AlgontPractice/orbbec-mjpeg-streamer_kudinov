@@ -1,7 +1,7 @@
 import logging
 import cv2
 import asyncio
-
+import time
 import numpy as np
 
 
@@ -15,6 +15,7 @@ class Scanner:
         self.colorCap = None
         # self.depthCap = None
         self.photo_taken = False
+        self.last_check = 0
 
     async def init_device(self):
         # TODO: метод, в котором реализуем подключение к камере с помощью библиотеки opencv-python
@@ -63,11 +64,13 @@ class Scanner:
             
             frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             frame_gray = cv2.equalizeHist(frame_gray)
-            recs = self.Cascade.detectMultiScale(frame_gray)
-            is_empty = True
-            for (x, y, w, h) in recs:
-                is_empty = not bool(x)
-                frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 255), 2)
+            if time.time() - self.last_check >= 1:
+                self.last_check = time.time()
+                recs = self.Cascade.detectMultiScale(frame_gray)
+                is_empty = True
+                for (x, y, w, h) in recs:
+                    is_empty = not bool(x)
+                    frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 255), 2)
                 
             
             if (not self.photo_taken) and (not is_empty):
