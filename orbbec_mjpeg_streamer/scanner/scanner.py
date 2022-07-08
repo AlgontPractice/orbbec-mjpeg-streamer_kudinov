@@ -72,9 +72,8 @@ class Scanner:
                     is_empty = not bool(x)
                     frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 255), 2)
                 
-            
-            if (not self.photo_taken) and (not is_empty):
-                cv2.imwrite('recognitions/person.jpg', frame)
+                if (not self.photo_taken) and (not is_empty):
+                    cv2.imwrite('recognitions/person.jpg', frame)
 
 
 
