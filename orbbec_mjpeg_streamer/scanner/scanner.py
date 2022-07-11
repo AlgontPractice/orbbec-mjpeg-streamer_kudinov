@@ -33,13 +33,6 @@ class Scanner:
         self.colorCap.set(cv2.CAP_PROP_AUTO_EXPOSURE, self._video_params['exposure_auto'])
         self.colorCap.set(cv2.CAP_PROP_EXPOSURE, self._video_params['exposure_absolute'])
 
-        cv2.samples.addSamplesDataSearchPath('/etc/cam2_kudinov/orbbec-mjpeg-streamer_kudinov/opencv_samples/')
-        self.Cascade = cv2.CascadeClassifier()
-        self.Cascade.load(cv2.samples.findFile('haarcascade_frontalface_alt.xml'))
-        if self.Cascade.empty():
-            raise Exception()
-
-
         if not (self.colorCap.isOpened()):
             raise Exception()
 
@@ -50,22 +43,6 @@ class Scanner:
             
             if not (clrStatus):
                 raise Exception()
-
-            
-            frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            frame_gray = cv2.equalizeHist(frame_gray)
-            if time.time() - self.last_check >= 1:
-                self.last_check = time.time()
-                recs = self.Cascade.detectMultiScale(frame_gray)
-                is_empty = True
-                for (x, y, w, h) in recs:
-                    is_empty = not bool(x)
-                    frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 255), 2)
-                
-                if (not self.photo_taken) and (not is_empty):
-                    cv2.imwrite('recognitions/person.jpg', frame)
-
-
 
             app['frame'] = cv2.imencode('.jpg', frame)[1]
 

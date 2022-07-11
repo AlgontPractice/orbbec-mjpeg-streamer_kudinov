@@ -5,15 +5,16 @@ import asyncio
 import cv2
 from aiohttp import web, MultipartWriter
 from aiohttp_cors import CorsViewMixin
-#from m7_aiohttp.util.logged import logged
-
+from m7_aiohttp.util.logged import logged
+from aiopg.sa import create_engine
+import sqlalchemy as sa
 
 logger = logging.getLogger('orbbec-mjpeg-streamer')
 
 
 class MjpegHandlerService(CorsViewMixin):
 
-    #@logged(logger)
+    @logged(logger)
     async def mjpeg_handler_rgb(self, request):
         # TODO: реализуем метод, генерирующий mjpeg-поток на основе кадров из переменной app['frame']
         my_boundary = 'boundary'

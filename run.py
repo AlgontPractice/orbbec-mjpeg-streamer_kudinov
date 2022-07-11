@@ -6,6 +6,7 @@ import json
 import sys
 import argparse
 from aiohttp import web
+import asyncio
 
 from orbbec_mjpeg_streamer.app import create_app
 
@@ -34,7 +35,8 @@ def get_config_files():
 
 if __name__ == '__main__':
     config_file = get_config_files()
-
+    # Для работы бд на Windows
+    # asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     with open(config_file) as f:
         config = json.load(f)
     app = create_app(config=config)

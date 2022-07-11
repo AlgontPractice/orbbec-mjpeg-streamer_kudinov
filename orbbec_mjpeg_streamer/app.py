@@ -12,7 +12,7 @@ from aiohttp import web
 
 from orbbec_mjpeg_streamer.api.mjpeg_handler_service import MjpegHandlerService
 from orbbec_mjpeg_streamer.scanner.scanner import Scanner
-
+from orbbec_mjpeg_streamer.api.jsonrpc_server import JSONRPCServer
 logger = logging.getLogger('app')
 
 
@@ -91,9 +91,7 @@ def create_app(loop: AbstractEventLoop = None, config: dict = None) -> web.Appli
     app['camera_service'] = MjpegHandlerService()
 
     cors.add(app.router.add_route('GET', '/', app['camera_service'].mjpeg_handler_rgb))  # endpoint, на котором мы можем посмотреть mjpeg-поток. Пример http://192.168.1.245:8080/
-    # cors.add(app.router.add_route('GET', '/depth', app['camera_service'].mjpeg_handler_depth))
-    # cors.add(app.router.add_route('GET', '/min', app['camera_service'].mjpeg_handler_min))
-
+    cors.add(app.router.add_route('POST', '/rpc', JSONRPCServer))
 
     app.on_startup.append(on_app_start)
     app.on_shutdown.append(on_app_stop)
