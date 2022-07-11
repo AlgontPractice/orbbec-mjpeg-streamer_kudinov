@@ -13,13 +13,11 @@ class Scanner:
     def __init__(self, video_params: dict):
         self._video_params = video_params
         self.colorCap = None
-        # self.depthCap = None
         self.photo_taken = False
         self.last_check = 0
 
     async def init_device(self):
         # TODO: метод, в котором реализуем подключение к камере с помощью библиотеки opencv-python
-        #self.depthCap = cv2.VideoCapture(cv2.CAP_OPENNI2_ASTRA)
         self.colorCap = cv2.VideoCapture(0)
         self.colorCap.set(cv2.CAP_PROP_FRAME_WIDTH, self._video_params['width'])
         self.colorCap.set(cv2.CAP_PROP_FRAME_HEIGHT, self._video_params['height'])
@@ -48,14 +46,6 @@ class Scanner:
     async def image_grabber(self, app):
         while True:
         # TODO: метод, в котором мы получаем кадры с камеры и сохраняем их в переменную app['frame'] в формате jpg
-            # self.colorCap.grab()
-            # self.depthCap.grab()
-
-            # depthStatus, depthMap = self.depthCap.retrieve(cv2.CAP_OPENNI_DEPTH_MAP)
-            # clrStatus, frame = self.colorCap.retrieve()
-            # minimal = int(np.array(depthMap).max())
-            # app['minimal'] = minimal
-            # depthMap = depthMap.astype(np.uint8)
             clrStatus, frame = self.colorCap.read()
             
             if not (clrStatus):
@@ -78,7 +68,5 @@ class Scanner:
 
 
             app['frame'] = cv2.imencode('.jpg', frame)[1]
-            # app['depthmap'] = cv2.imencode('.jpg', depthMap)[1]
-            
 
             await asyncio.sleep(1/self._video_params['fps'])
